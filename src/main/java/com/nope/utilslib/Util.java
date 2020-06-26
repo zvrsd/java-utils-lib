@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 /**
  * Utilities ( yes, that's it )
  * 
- * @author kev
+ * @author zvr
  */
 public class Util {
 
