@@ -118,6 +118,10 @@ public class LogTool {
         isEnabled = false;
     }
 
+    /**
+     * Enables log messages
+     *
+     */
     public void enable() {
         isEnabled = true;
 
