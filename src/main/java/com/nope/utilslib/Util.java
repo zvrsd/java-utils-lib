@@ -3,9 +3,12 @@ package com.nope.utilslib;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +29,10 @@ public class Util {
     private Random rand;
     private InputStreamReader reader;
     private BufferedReader buffer;
+    private LogTool logTool;
     
     private Util(){
-        start();
+        init();
     }
     
     public static Util getInstance(){
@@ -41,12 +45,13 @@ public class Util {
     /**
      * Initializes the different variables used across this class
      */
-    public final void start(){
+    public final void init(){
    
         time = System.currentTimeMillis();
         rand = new Random();
         reader = new InputStreamReader(System.in);
         buffer = new BufferedReader(reader);
+        logTool = LogTool.getInstance();
     }
     /**
      * Closes things that need to be
@@ -200,7 +205,11 @@ public class Util {
         return generateIntArray(length, false);
     }
     /**
+     * Generates a random number between min and max included
      * 
+     * @param min The minium value ( included )
+     * @param max The maximum value ( included )
+     * @return The generated number
      */
     public int getRandomNumber(int min, int max) {
         return rand.nextInt(max - min + 1) + min;
@@ -271,4 +280,152 @@ public class Util {
     public void clear(){
         clear(32);
     }
+    
+    /**
+	 * Gets, sorts and returns fields of the specified class to use them
+     *
+     * @param cls The class to get fields from
+     * @return An Array of Fields defined in the class
+	 */
+	public Field[] getFields(Class cls){
+		
+		ArrayList<Field> fields = new ArrayList<>();
+		
+		// Loops over each of the superclass
+		while(cls != Object.class){
+			fields.addAll(Arrays.asList(cls.getDeclaredFields()));
+			logTool.D("Added field "+cls.getSimpleName());
+			cls = cls.getSuperclass();
+		}
+		
+		Field[] field = new Field[fields.size()];
+		fields.toArray(field);
+		
+		//Sorts all fields into alphabetical order
+		Arrays.sort(field,new Comparator<Field>(){
+
+				public int compare(Field f1, Field f2){
+					return f1.getName().compareTo(f2.getName());
+				}
+		});
+		return field;
+	}
+    // TODO : ADD A VERIFICATION IF THE GETTER DOES NOT EXIST FOR THIS FIELD
+	/**
+	 * Attempts to get a value from the given field
+     * It only works if the field passed as argument has a getter method
+     *
+     * @param field The field to get the value from
+     * @param object The object this field is from
+     * @return The value returned from this field
+	 */
+	public Object getValueFromField(Field field, Object object){
+
+		// Prepares the method name ( getter ) that matches the current variable we want
+		String methodName ="get"+Character.toUpperCase(field.getName().charAt(0))+
+			field.getName().substring(1);
+
+		// Attempts to find and invoke the method that will get us the variable's value
+		try{
+			return object.getClass().getMethod(methodName,(Class[])null).invoke(object);
+		}
+		catch(IllegalArgumentException | 
+                InvocationTargetException | 
+                NoSuchMethodException | 
+                SecurityException | 
+                IllegalAccessException e){
+            logTool.E("There was an error while getting the value from "+field.getName());
+            logTool.I(e.getMessage());
+            return "could not get the value";
+        }
+	}
+    // TODO : ADD A VERIFICATION IF THE SETTER DOES NOT EXIST FOR THIS FIELD
+	/**
+     * Attempts to set a value to the specified field if the matching setter does exist
+     * 
+     * @param field The field to set the value to
+     * @param object The object this field is from
+     * @param value The value to set
+	 */
+	public void setValueToField(Field field, Object object, Object value){
+
+		// Prepares the method name ( setter ) that matches the current variable we want
+		String methodName ="set"+Character.toUpperCase(field.getName().charAt(0))+
+			field.getName().substring(1);
+
+		invokeMethod(methodName,object,value);
+	}
+	/**
+	 * Retrieves and returns every Object's fields into a String that can be
+	 * displayed in human-readable format<br>
+     * Fields values can only be obtained if they have an associated getter
+     * 
+     * 
+     * @param object The object to get fields from
+     * @param addNewLine Set to true if you want each field on a separate line
+     * @return The formatted string with all fields
+     */
+	public String formatFields(Object object, boolean addNewLine){
+		
+		String formatedString = "";
+		
+		for(Field field : getFields(object.getClass())){
+			// Varibale's name
+			formatedString += " "+field.getName()+":";
+			// Variable's value
+			try{
+				formatedString += " " + getValueFromField(field,object);
+			}
+			catch(IllegalArgumentException e){}
+			
+			if(addNewLine){
+				formatedString += "\n";
+            }
+		}
+		return formatedString;
+	}
+    /**
+     * Prints all fields on the same line<br>
+     * Same as : formatFields(object,false)
+     * 
+     * @see formatFields
+     * @param object The object to get fields from
+     * @return The formatted string with all fields 
+     */
+	public String formatFields(Object object){
+		return formatFields(object,false);
+	}
+    
+    // TODO : REFACTORING
+    /**
+	 * Attempts to find and invoke the method that will get us the variable's value
+     * 
+     * 
+     */
+	private Object invokeMethod(String method, Object recv, Object arg){
+		Class c = null;
+	
+		// Attempts to check if the method contains primitive type args
+		try{
+			c = (Class)arg.getClass().getField("TYPE").get(null);
+		}
+		catch(NoSuchFieldException e){
+			c = arg.getClass();
+		}
+		catch(IllegalAccessException | IllegalArgumentException e){
+            logTool.E(e+"");
+        }
+
+		try{
+			return recv.getClass().getMethod(method,c).invoke(recv,arg);
+		}
+		catch(IllegalArgumentException | InvocationTargetException | SecurityException | IllegalAccessException e){
+            logTool.E(e+"");}
+		catch(NoSuchMethodException e){
+			logTool.E("Method "+method+"("+c.getSimpleName()+" o) not found.");
+		}
+		
+		return null;
+	}
+	
 }
