@@ -141,10 +141,30 @@ public class Util {
     }
 
     /**
+     * Prompts the user to input a string with a length between minLength and
+     * maxLength<br>
+     * 
+     * 
+     * @param message A message to display for the user
+     * @param minLength Minimum string length
+     * @param maxLength Maximum string length
+     * @return The string from user input
+     * @see inputString
+     */
+    public String readInputString(String message, int minLength, int maxLength){
+        String s = inputString(message+" ("+minLength+"-"+maxLength+" :");
+        
+        while(s.length() < minLength || s.length() > maxLength){
+            display("Invalid length");
+            s = inputString(message+" ("+minLength+"-"+maxLength+" :");
+        }
+        return s;
+    }
+    /**
      * Prompts the user to input text
      *
-     * @param message
-     * @return String from user input
+     * @param message A message to display for the user
+     * @return The String from user input
      */
     public String inputString(String message) {
         String s = "";
