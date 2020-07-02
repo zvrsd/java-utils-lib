@@ -137,7 +137,7 @@ public class Util {
      * continue
      */
     public void pressEnter() {
-        inputString("Press Enter to go back");
+        inputString("Press Enter");
     }
 
     /**
