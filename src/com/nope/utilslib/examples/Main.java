@@ -2,6 +2,12 @@ package com.nope.utilslib.examples;
 
 import com.nope.utilslib.LogTool;
 import com.nope.utilslib.Util;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Test file
@@ -12,11 +18,14 @@ public class Main {
 
  
     static int temp;
+    static Util util;
    
     public static void main (String [] args) {
 
         LogTool lt = LogTool.getInstance();
-        Util util = Util.getInstance();
+        util = Util.getInstance();
+        
+        
         
         lt.setLevel(LogTool.DEBUG);
         lt.D("debug msg");
@@ -28,6 +37,8 @@ public class Main {
         
         lt.D(util.formatFields(lt, true));
         
+        dateTest();
+  
         int value = util.inputNumber("Input a number");
         util.display(value);
         
@@ -36,5 +47,13 @@ public class Main {
         
         text = util.readInputString("Input text only", 2, 16, false);
         util.display(text);
+        
+        
+    }
+    
+    private static void dateTest(){
+        
+        String dateStr = util.readInputDate("Enter a date ", false);
+        util.display(dateStr);
     }
 }
