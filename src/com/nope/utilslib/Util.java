@@ -29,6 +29,7 @@ public class Util {
     private final String DIGITS_CHARACTERS = "0123456789";
     private final String DATE_FORMAT = "dd/MM/yyyy";
     
+    private int linesToClear; 
     private long time;
     private Random rand;
     private InputStreamReader reader;
@@ -56,6 +57,7 @@ public class Util {
         reader = new InputStreamReader(System.in);
         buffer = new BufferedReader(reader);
         logTool = LogTool.getInstance();
+        linesToClear = 32;
     }
 
     /**
@@ -405,7 +407,7 @@ public class Util {
      * clear(32)
      */
     public void clear() {
-        clear(32);
+        clear(linesToClear);
     }
 
     /**
@@ -557,4 +559,7 @@ public class Util {
         return null;
     }
 
+    public void setLinesToClear(int linesToClear) {
+        this.linesToClear = linesToClear;
+    }
 }
