@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.logging.Level;
@@ -203,6 +206,33 @@ public class Util {
         return i;
     }
     
+    /**
+     * Prompts the user to input a date<br>
+     * The date must exist and use the following format :<br>
+     * DD/MM/YYYY<br>
+     * 
+     * @param message Message displayed to the user
+     * @param isNullAllowed True if null is allowed
+     * @return The date input by the user
+     */
+    public String readInputDate(String message, boolean isNullAllowed){
+        String dateString = readInputString(message, 8, 10, isNullAllowed);
+        
+        if(dateString == null){
+           return dateString;
+        }
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setLenient(false);
+        
+        try {
+            dateFormat.parse(dateString);
+        } catch (ParseException ex) {
+            display("Invalid date");
+            dateString = readInputString(message, 8, 10, isNullAllowed);
+        }
+        return dateString;
+    }
     /**
      * Prompts the user to input text
      *
