@@ -2,12 +2,6 @@ package com.nope.utilslib.examples;
 
 import com.nope.utilslib.LogTool;
 import com.nope.utilslib.Util;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Test file
