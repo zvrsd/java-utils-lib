@@ -148,17 +148,39 @@ public class Util {
      * @param message A message to display for the user
      * @param minLength Minimum string length
      * @param maxLength Maximum string length
+     * @param isNullAllowed True if null values (length == 0) are allowed
      * @return The string from user input
      * @see inputString
      */
-    public String readInputString(String message, int minLength, int maxLength){
-        String s = inputString(message+" ("+minLength+"-"+maxLength+") :");
+    public String readInputString(String message, int minLength, int maxLength, boolean isNullAllowed){
+        String s = inputString(message+" ("+minLength+"-"+maxLength+") :", isNullAllowed);
+        
+        if(s == null){
+            return s;
+        }
         
         while(s.length() < minLength || s.length() > maxLength){
             display("Invalid value");
             s = inputString(message+" ("+minLength+"-"+maxLength+") :");
         }
         return s;
+    }
+    
+    /**
+     * Prompts the user to input a string with a length between minLength and
+     * maxLength<br>
+     * It keeps asking until a valid string has been received
+     * Does not allow null (length == 0) values
+     * 
+     * @param message A message to display for the user
+     * @param minLength Minimum string length
+     * @param maxLength Maximum string length
+     * @return The string from user input
+     * @see readInputString(String,int,int,boolean)
+     * @see inputString
+     */
+    public String readInputString(String message, int minLength, int maxLength){
+        return readInputString(message, minLength, maxLength, false);
     }
     
     /**
@@ -180,13 +202,15 @@ public class Util {
         }
         return i;
     }
+    
     /**
      * Prompts the user to input text
      *
      * @param message A message to display for the user
+     * @param isNullAllowed True if null values are allowed
      * @return The String from user input
      */
-    public String inputString(String message) {
+    public String inputString(String message, boolean isNullAllowed) {
         String s = "";
 
         System.out.println(message + " ");
@@ -195,7 +219,21 @@ public class Util {
         } catch (IOException ex) {
             display("IO Error");
         }
+        
+        if(isNullAllowed && s.length() == 0){
+            return null;
+        }
+        
         return s;
+    }
+    /**
+     * Prompts the user to input text
+     *
+     * @param message A message to display for the user
+     * @return The String from user input
+     */
+    public String inputString(String message) {
+        return inputString(message, false);
     }
 
     /**
@@ -216,7 +254,7 @@ public class Util {
      */
     public int inputNumber(String message) {
         int num;
-
+        
         try {
             num = Integer.parseInt(inputString(message));
             return num;
