@@ -27,7 +27,8 @@ public class Util {
 
     private final String ALPHABET_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final String DIGITS_CHARACTERS = "0123456789";
-
+    private final String DATE_FORMAT = "dd/MM/yyyy";
+    
     private long time;
     private Random rand;
     private InputStreamReader reader;
@@ -222,14 +223,14 @@ public class Util {
            return dateString;
         }
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         dateFormat.setLenient(false);
         
         try {
             dateFormat.parse(dateString);
         } catch (ParseException ex) {
             display("Invalid date");
-            dateString = readInputString(message, 8, 10, isNullAllowed);
+            dateString = readInputString(message+" "+DATE_FORMAT.toUpperCase(), 8, 10, isNullAllowed);
         }
         return dateString;
     }
