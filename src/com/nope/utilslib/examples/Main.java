@@ -27,5 +27,14 @@ public class Main {
         lt.F("debug msg");
         
         lt.D(util.formatFields(lt, true));
+        
+        int value = util.inputNumber("Input a number");
+        util.display(value);
+        
+        String text = util.readInputString("Input text or nothing", 2, 16, true);
+        util.display(text);
+        
+        text = util.readInputString("Input text only", 2, 16, false);
+        util.display(text);
     }
 }
