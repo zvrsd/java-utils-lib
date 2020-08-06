@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.logging.Level;
@@ -376,6 +375,7 @@ public class Util {
         final char columnSeparator = '|';
         final char columDelimiter = '+';
         final char columnFiller = '-';
+        final String nullReplacement = "";
         
         int[] longestValues = new int[columnNames.length];
     
@@ -402,6 +402,9 @@ public class Util {
             
             for(int row = 0; row < data.length; row++){
  
+                if(data[row][col] == null){
+                    data[row][col] = "";
+                }
                 if(data[row][col].length() > longestValues[col]){
                     longestValues[col] = data[row][col].length();
                 }
@@ -442,6 +445,7 @@ public class Util {
             for(int j = 0; j < subString.length() - 1; j++){
                 encasingLine += columnFiller;
             }
+
             encasingLine += columDelimiter;
         }
         

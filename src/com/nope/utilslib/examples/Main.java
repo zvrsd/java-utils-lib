@@ -59,7 +59,7 @@ public class Main {
         String[] person1 = {"david", "12", "paris"};
         String[] person2 = {"hector", "35", "london"};
         String[] person3 = {"darell", "86", "moscow"};
-        String[] person4 = {"sophia", "58", "tokyo"};
+        String[] person4 = {"sophia", "58", null};
         
         // 4 persons and each person has 3 attributes 
         String[][] data = new String[4][3];
