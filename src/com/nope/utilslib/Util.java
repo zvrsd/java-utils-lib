@@ -359,6 +359,143 @@ public class Util {
     }
 
     /**
+     * Generates a properly organized table<br>
+     * The provided column names must be ordered such as it matches the order in the dataset
+     * and its lenght must match the length of a row in the dataset
+     * 
+     * @param columnNames Names of the displayed columns (in order from left to right)
+     * @param data A two-dimensional String array of data to display
+     * @param message A message to display above the table
+     * @return 
+     */
+    public String generateDisplayabeTable(
+        String[] columnNames, String[][] data, String message){
+    
+        final int extraSpacesBeforeValue = 1;
+        final int extraSpacesAfterValue = 1;
+        final char columnSeparator = '|';
+        final char columDelimiter = '+';
+        final char columnFiller = '-';
+        
+        int[] longestValues = new int[columnNames.length];
+    
+        String table = "";
+        String encasingLine = "";
+        String colLine = "";
+        String dataLines = "";
+        String dataLine;
+        int extraSpacesTmp;
+        
+        if(columnNames.length != longestValues.length){
+            
+            table += "\n"+"The table cannot be displayed";
+            table += "\n"+"Column and value arrays have different length";
+            
+            return table;
+        }
+   
+        // Check the longest attribute for each column in every row
+        for(int col = 0; col < longestValues.length; col++){
+            
+             // The min width will be the column name length
+            longestValues[col] = columnNames[col].length();
+            
+            for(int row = 0; row < data.length; row++){
+ 
+                if(data[row][col].length() > longestValues[col]){
+                    longestValues[col] = data[row][col].length();
+                }
+            }
+        }
+        
+        // Create table header
+        for(int i = 0; i < columnNames.length; i++){
+            
+            String subString = "";
+            
+            // Add extra spaces before column name
+            extraSpacesTmp = 0;
+            while(extraSpacesTmp++ < extraSpacesBeforeValue){
+                subString += " ";
+            }
+            
+            // Add the column name
+            subString += columnNames[i];
+            
+            // Add extra spaces after column name
+            extraSpacesTmp = 0;
+            while(extraSpacesTmp++ < extraSpacesAfterValue){
+                subString += " ";
+            }
+
+            // Add spaces to make it match the required length
+            while(subString.length() < longestValues[i] + extraSpacesBeforeValue + extraSpacesAfterValue){
+                subString += " ";
+            }
+                
+            // Add the column separator after the column name
+            subString += columnSeparator;
+            
+            colLine += subString;
+            
+            // Fill the lines above and below the column
+            for(int j = 0; j < subString.length() - 1; j++){
+                encasingLine += columnFiller;
+            }
+            encasingLine += columDelimiter;
+        }
+        
+        // Add the data
+        for(int row = 0; row < data.length; row++){
+            
+            for(int col = 0; col < longestValues.length; col++){
+        
+                dataLine = "";
+                
+                // Add extra spaces before value
+                extraSpacesTmp = 0;
+                while(extraSpacesTmp++ < extraSpacesBeforeValue){
+                    dataLine += " ";
+                }
+
+                // Add the value
+                dataLine += data[row][col];
+
+                // Add extra spaces after value
+                extraSpacesTmp = 0;
+                while(extraSpacesTmp++ < extraSpacesAfterValue){
+                    dataLine += " ";
+                }
+
+                // Add spaces to make it match the required length
+                while(dataLine.length() < longestValues[col] + extraSpacesBeforeValue + extraSpacesAfterValue){
+                    dataLine += " ";
+                }
+
+                // Add the column separator after the value
+                dataLine += columnSeparator;
+                
+                // Add this part to the current line
+                dataLines += dataLine;
+            }
+            dataLines += "\n";
+        }
+        
+        if(message != null){
+            table += "\n"+message;
+            table += "\n"+message.replaceAll("\\.*.","*");
+        }
+
+        table += "\n"+encasingLine;
+        table += "\n"+colLine;
+        table += "\n"+encasingLine;
+        table += "\n"+dataLines;
+        table += encasingLine;
+
+        return table;
+    }
+    
+    /**
      * Displays a string
      *
      * @param message The string to display
