@@ -670,6 +670,23 @@ public class Util {
         return formatFields(object, false);
     }
 
+    /**
+     * Capitalize a string<br>
+     * The first letter will be uppercase while the next ones will be lower
+     * 
+     * 
+     * @param str The string to capitalize
+     * @return The capitalized string
+     */
+    public String capitalize(String str){
+        if(str == null){
+            return null;
+        }
+        else if(str.length() < 2){
+            return str.toUpperCase();
+        }
+        return (""+str.charAt(0)).toUpperCase()+str.substring(1).toLowerCase();
+    }
     // TODO : REFACTORING
     /**
      * Attempts to find and invoke the method that will get us the variable's
