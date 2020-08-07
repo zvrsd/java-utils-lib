@@ -22,7 +22,7 @@ public class Main {
  
         logTool.setLevel(LogTool.DEBUG);
         
-        dynamicArrayTest();
+        capitalizationTest();
     }
     
     private static void logTest(){
@@ -48,6 +48,12 @@ public class Main {
         util.display(text);
     }
     
+    private static void capitalizationTest(){
+        String text = util.readInputString("Input text or nothing", 2, 16, true);
+        util.display("before : "+text);
+        text = util.capitalize(text);
+        util.display("after : "+text);
+    }
     private static void dateTest(){
         
         String dateStr = util.readInputDate("Enter a date ", false);
